@@ -1,0 +1,17 @@
+name: Docker CI
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Configure Docker
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_TOKEN: ${{secrets.DOCKER_TOKEN}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_TOKEN
+    - name: Build 22.04
+      run: |
+        docker build . --pull --build-arg OCIE_VERSION=22.04 --tag bshp/ezproxy:latest --no-cache

@@ -1,0 +1,44 @@
+#!/bin/bash
+    
+function app_shutdown()
+{
+    ${APP_HOME}/ezproxy stop;
+}
+    
+function app_reload()
+{
+
+    app_shutdown;
+    app_start;
+}
+    
+function app_start()
+{
+   ${APP_HOME}/ezproxy -d ${APP_HOME};
+}
+    
+function app_certs()
+{
+    ${OCIE_LIB}/cacerts;
+}
+    
+function app_config()
+{
+    if [[ "${HOSTNAME}" != *.* ]];then
+        echo "EzProxy requires the hostname be a fully-qualified domain name";
+        echo "Set your FQDN during runtime, e.g --hostname something.example.com";
+    fi;
+    
+    echo "Generating EzProxy Config";
+    ${APP_HOME}/ezproxy -d ${APP_HOME} -m >/dev/null;
+    
+    if [[ -z "${WSKEY}" ]];then
+        echo "EzProxy requires a license key, set it during runtime with -e WSKEY='mykeyfromoclc'";
+        echo "Container will now exit";
+        exit 1;
+    fi;
+    if [[ ! -f "${APP_HOME}/config/wskey.key" ]];then
+        echo "Installing license file";
+        ${APP_HOME}/ezproxy -k "${WSKEY}" >/dev/null;
+    fi;
+}

@@ -10,13 +10,12 @@ ENV OCIE_CONFIG=/etc/ezproxy \
     WSKEY=""
     
 RUN <<"EOD" bash
-    set -eux;
+    set -eu;
     install -d -m 0755 -o root -g root ${APP_HOME}/config;
     install -d -m 0755 -o root -g root ${OCIE_CONFIG};
     wget --quiet --no-cookies https://help.oclc.org/@api/deki/files/9850/ezproxy-linux.bin;
     wget --quiet --no-cookies https://help.oclc.org/@api/deki/files/11977/ezproxy-linux-sha256.sum;
-    sed -i 's/ $//g' ezproxy-linux-sha256.sum;
-    OCLC_SIG="$(sha256sum -c /ezproxy-linux-sha256.sum 2>&1 | grep OK)";
+    OCLC_SIG=$(echo $(cat ezproxy-linux-sha256.sum | sed 's/\s.*$//') ezproxy-linux.bin | sha256sum -c | grep -o 'OK');
     if [[ -z "$OCLC_SIG" ]];then
         echo "Signature does not match";
         exit 1;

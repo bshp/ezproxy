@@ -21,6 +21,8 @@ RUN <<"EOD" bash
         exit 1;
     fi;
     mv /ezproxy-linux.bin ${APP_HOME}/ezproxy;
+    chmod a+x ${APP_HOME}/ezproxy;
+    echo "EZProxy Version: $(${APP_HOME}/ezproxy -v | sed -n 's/^.*\s\(.*\) GA.*/\1/p')";
 EOD
 
 COPY --chown=root:root --chmod=0755 ./src/ ./etc/ezproxy/

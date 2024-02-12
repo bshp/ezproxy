@@ -53,7 +53,7 @@ Add at end of your entrypoint script either of:
 ````
 /usr/sbin/ociectl --run;
 ````
-To bypass Ocie auto deploy use the below, you will need to run the initial setup first 
+To bypass/disable Ocie, you will need to complete the initial setup 
 ````
 # Generates initial config
 /usr/local/ezproxy/ezproxy -d /opt/ezproxy -m;

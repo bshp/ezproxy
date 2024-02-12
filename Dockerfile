@@ -8,6 +8,7 @@ ENV OCIE_CONFIG=/etc/ezproxy \
     APP_TYPE="ezproxy" \
     APP_DATA=/opt/ezproxy \
     APP_HOME=/usr/local/ezproxy \
+    APP_VOLS="/opt/ezproxy" \
     WSKEY=""
     
 RUN <<"EOD" bash

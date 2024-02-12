@@ -1,5 +1,26 @@
 #!/bin/bash
     
+function local_exit()
+{
+    domain="EzProxy requires the hostname be a fully-qualified domain name, set it during runtime, e.g --hostname something.example.com";
+    license="EzProxy requires a valid license key, set it during runtime with -e WSKEY='mykeyfromoclc'";
+    invalid="License Key is INVALID, Error Message:";
+    if [[ "$1" == "-d" ]];then
+        echo "$domain";
+    fi;
+    if [[ "$1" == "-k" ]];then
+        echo "$license";
+    fi;
+    if [[ "$1" == "-v" ]];then
+        echo "$invalid";
+        if [[ ! -z "$2" ]];then
+            echo "$2";
+        fi;
+    fi;
+    echo "Container will now exit";
+    exit 1;
+}
+    
 function app_shutdown()
 {
     /usr/sbin/ezproxy stop;
@@ -14,7 +35,7 @@ function app_reload()
     
 function app_start()
 {
-   /usr/sbin/ezproxy -d ${APP_DATA};
+   ${APP_HOME}/ezproxy -d ${APP_DATA};
 }
     
 function app_certs()
@@ -25,20 +46,24 @@ function app_certs()
 function app_config()
 {
     if [[ "${HOSTNAME}" != *.* ]];then
-        echo "EzProxy requires the hostname be a fully-qualified domain name";
-        echo "Set your FQDN during runtime, e.g --hostname something.example.com";
+        local_exit -d;
     fi;
-    
-    echo "Generating EzProxy Config";
-    /usr/sbin/ezproxy -d ${APP_DATA} -m >/dev/null;
-    
     if [[ -z "${WSKEY}" ]];then
-        echo "EzProxy requires a license key, set it during runtime with -e WSKEY='mykeyfromoclc'";
-        echo "Container will now exit";
-        exit 1;
+        local_exit -k;
     fi;
+        
+    echo "Generating EzProxy Config";
+    ${APP_HOME}/ezproxy -d ${APP_DATA} -m >/dev/null;
+    
     if [[ ! -f "${APP_HOME}/wskey.key" ]];then
         echo "Installing license file";
-        /usr/sbin/ezproxy -k "${WSKEY}" >/dev/null;
+        result=$(${APP_HOME}/ezproxy -k "${WSKEY}" 2>&1);
+        valid=$(echo $result | grep 'EZproxy license key is valid.');
+        if [[ ! -z "$valid" ]];then
+            echo "License Key is VALID";
+            ln -sf ${APP_HOME}/wskey.key /opt/ezproxy/wskey.key;
+        else
+            local_exit -v "$result";
+        fi;
     fi;
 }

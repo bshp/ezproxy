@@ -12,6 +12,7 @@ ENV OCIE_CONFIG=/etc/ezproxy \
     
 RUN <<"EOD" bash
     set -eu;
+    install -d -m 0755 -o root -g root ${APP_HOME};
     install -d -m 0755 -o root -g root ${APP_DATA}/config;
     install -d -m 0755 -o root -g root ${OCIE_CONFIG};
     wget --quiet --no-cookies https://help.oclc.org/@api/deki/files/9850/ezproxy-linux.bin;

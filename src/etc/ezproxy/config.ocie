@@ -23,7 +23,7 @@ function local_exit()
     
 function app_shutdown()
 {
-    /usr/sbin/ezproxy stop;
+    ${APP_HOME}/ezproxy stop;
 }
     
 function app_reload()

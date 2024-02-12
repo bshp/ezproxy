@@ -14,7 +14,7 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_TOKEN
     - name: Build 22.04
       run: |
-        docker build . --pull --build-arg OCIE_VERSION=22.04 --tag bshp/ezproxy:latest --no-cache --progress plain > build.out
+        docker build . --pull --build-arg OCIE_VERSION=22.04 --tag bshp/ezproxy:latest --no-cache --progress plain > build.out 2>&1
         cat build.out
         echo "TAG=$(cat build.out | sed -n 's/^.*Version: \(.*\)$/\1/p')" >> $GITHUB_ENV
     - name: Push 22.04

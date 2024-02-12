@@ -15,7 +15,8 @@ jobs:
     - name: Build 22.04
       run: |
         docker build . --pull --build-arg OCIE_VERSION=22.04 --tag bshp/ezproxy:latest --no-cache --progress plain > build.out
-        echo "TAG=$(cat build.out | sed -n 's/^.*Version: \(.*\)$/\1/p')" >> "$GITHUB_ENV"
+        cat build.out
+        echo "TAG=$(cat build.out | sed -n 's/^.*Version: \(.*\)$/\1/p')" >> $GITHUB_ENV
     - name: Push 22.04
       run: |
         docker tag bshp/ezproxy:latest bshp/ezproxy:${{ env.TAG }}

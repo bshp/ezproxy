@@ -2,7 +2,7 @@
     
 function app_shutdown()
 {
-    ${APP_HOME}/ezproxy stop;
+    /usr/sbin/ezproxy stop;
 }
     
 function app_reload()
@@ -14,7 +14,7 @@ function app_reload()
     
 function app_start()
 {
-   ${APP_HOME}/ezproxy -d ${APP_HOME};
+   /usr/sbin/ezproxy -d ${APP_DATA};
 }
     
 function app_certs()
@@ -30,15 +30,15 @@ function app_config()
     fi;
     
     echo "Generating EzProxy Config";
-    ${APP_HOME}/ezproxy -d ${APP_HOME} -m >/dev/null;
+    /usr/sbin/ezproxy -d ${APP_DATA} -m >/dev/null;
     
     if [[ -z "${WSKEY}" ]];then
         echo "EzProxy requires a license key, set it during runtime with -e WSKEY='mykeyfromoclc'";
         echo "Container will now exit";
         exit 1;
     fi;
-    if [[ ! -f "${APP_HOME}/config/wskey.key" ]];then
+    if [[ ! -f "${APP_HOME}/wskey.key" ]];then
         echo "Installing license file";
-        ${APP_HOME}/ezproxy -k "${WSKEY}" >/dev/null;
+        /usr/sbin/ezproxy -k "${WSKEY}" >/dev/null;
     fi;
 }

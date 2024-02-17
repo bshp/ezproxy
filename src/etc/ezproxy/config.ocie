@@ -23,7 +23,7 @@ function local_exit()
     
 function app_shutdown()
 {
-    ${APP_HOME}/ezproxy stop;
+    ${APP_HOME}/ezproxy stop >/dev/null;
 }
     
 function app_reload()
@@ -35,7 +35,8 @@ function app_reload()
     
 function app_start()
 {
-   ${APP_HOME}/ezproxy -d ${APP_DATA};
+   ${APP_HOME}/ezproxy -d ${APP_DATA} >/dev/null 2>&1 &
+   echo "$!"
 }
     
 function app_certs()
